@@ -102,7 +102,7 @@
 (defn consul-index
   [conn method endpoint params]
   (let [{:keys [body headers]} (consul conn method endpoint params)]
-    (assoc (headers->index headers) :body (cske/transform-keys csk/->kebab-case-keyword body))))
+    (assoc (headers->index headers) :body body)))
 
 (def consul-pascal-case-substitutions
   "Differences from PascalCase used by Consul."
@@ -179,7 +179,7 @@
   :string?    - Converts the value returned for k into a string.  Defaults to true."
   ([conn k]
    (kv-get conn k {}))
-  ([conn k {:keys [dc wait index raw? string?] :or {raw? false string? true} :as params }]
+  ([conn k {:keys [dc wait index raw? string?] :or {raw? false string? true} :as params}]
    (let [{:keys [body headers] :as response}
          (consul conn :get [:kv k]
                  {:query-params (cond-> (dissoc params :raw? :string?)
@@ -556,7 +556,7 @@
   "Returns the nodes and health info of a service."
   ([conn service]
    (service-health conn service {}))
-  ([conn service {:keys [dc tag passing?] :or {passing? false}:as params }]
+  ([conn service {:keys [dc tag passing?] :or {passing? false}:as params}]
    (consul-index conn :get [:health :service service]
                  {:query-params (cond-> (dissoc params :passing?)
                                   passing? (assoc :passing ""))})))
