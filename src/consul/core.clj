@@ -452,7 +452,7 @@
    (session-create conn session {}))
   ([conn session {:keys [dc] :as params}]
    (-> (consul-index conn :put [:session :create] {:query-params params :body (map->consulcase session)})
-       :body :id)))
+       :body :ID)))
 
 (defn session-renew
   "Renews a session. NOTE the TTL on the response and use that as a basic on when to renew next time
